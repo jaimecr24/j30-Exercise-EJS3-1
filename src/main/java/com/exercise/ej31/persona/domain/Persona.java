@@ -1,6 +1,7 @@
 package com.exercise.ej31.persona.domain;
 
 import com.exercise.ej31.estudiante.domain.Estudiante;
+import com.exercise.ej31.profesor.domain.Profesor;
 import com.exercise.ej31.shared.StringSequenceIdGenerator;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -60,6 +61,9 @@ public class Persona {
 
     @OneToOne(mappedBy = "persona", fetch = FetchType.LAZY)
     private Estudiante estudiante;
+
+    @OneToOne(mappedBy = "persona", fetch = FetchType.LAZY)
+    private Profesor profesor;
 
 }
 

@@ -1,11 +1,9 @@
 package com.exercise.ej31;
 
+import com.exercise.ej31.profesor.domain.Profesor;
 import lombok.Data;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
-import java.util.List;
 
 @Data
 //@Entity
