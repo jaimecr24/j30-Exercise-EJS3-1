@@ -1,6 +1,7 @@
 package com.exercise.ej31.estudiante.infrastructure;
 
 import com.exercise.ej31.estudiante.application.IEstudiante;
+import com.exercise.ej31.shared.UnprocesableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,16 @@ public class EstudianteController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<EstudiantePersonaOutputDTO> getById(@PathVariable String id) throws Exception
+    public ResponseEntity<Object> getById(@PathVariable String id, @RequestParam(name = "outputType") String outputType) throws Exception
     {
-        return new ResponseEntity<>(estudianteService.getById(id), HttpStatus.OK);
+        if (outputType.equals("simple")) {
+            return new ResponseEntity<>(estudianteService.getSimpleById(id), HttpStatus.OK);
+        }
+        else if (outputType.equals("full"))
+        {
+            return new ResponseEntity<>(estudianteService.getFullById(id), HttpStatus.OK);
+        }
+        else throw new UnprocesableException("Error: wrong value in outputType");
     }
 
     @PostMapping

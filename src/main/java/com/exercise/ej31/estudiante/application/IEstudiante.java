@@ -1,5 +1,6 @@
 package com.exercise.ej31.estudiante.application;
 
+import com.exercise.ej31.estudiante.infrastructure.EstudianteOutputDTO;
 import com.exercise.ej31.estudiante.infrastructure.EstudiantePersonaInputDTO;
 import com.exercise.ej31.estudiante.infrastructure.EstudiantePersonaOutputDTO;
 
@@ -9,7 +10,9 @@ public interface IEstudiante {
 
     List<EstudiantePersonaOutputDTO> findAll();
 
-    EstudiantePersonaOutputDTO getById(String id) throws Exception;
+    EstudiantePersonaOutputDTO getFullById(String id) throws Exception;
+
+    EstudianteOutputDTO getSimpleById(String id) throws Exception;
 
     EstudiantePersonaOutputDTO addEstudiante(EstudiantePersonaInputDTO inputDTO) throws Exception;
 

@@ -30,9 +30,15 @@ public class EstudianteService implements IEstudiante {
     }
 
     @Override
-    public EstudiantePersonaOutputDTO getById(String id) throws NotFoundException {
+    public EstudiantePersonaOutputDTO getFullById(String id) throws NotFoundException {
         Estudiante estudiante = estudianteRepo.findById(id).orElseThrow(()->new NotFoundException("id_estudiante: "+id+" not found."));
         return new EstudiantePersonaOutputDTO(estudiante);
+    }
+
+    @Override
+    public EstudianteOutputDTO getSimpleById(String id) throws NotFoundException {
+        Estudiante estudiante = estudianteRepo.findById(id).orElseThrow(()->new NotFoundException("id_estudiante: "+id+" not found."));
+        return new EstudianteOutputDTO(estudiante);
     }
 
     @Override
