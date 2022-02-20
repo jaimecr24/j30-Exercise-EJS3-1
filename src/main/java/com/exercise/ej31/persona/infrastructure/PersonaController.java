@@ -16,21 +16,26 @@ public class PersonaController {
     IPersona personaService;
 
     @GetMapping
-    public ResponseEntity<List<PersonaOutputDTO>> findAll()
+    public ResponseEntity<List<PersonaOutputDTO>> findAll(
+            @RequestParam(name="outputType", required = false, defaultValue = "simple") String outputType)
     {
-        return new ResponseEntity<>(personaService.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(personaService.findAll(outputType), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<PersonaOutputDTO> getById(@PathVariable String id) throws Exception
+    public ResponseEntity<PersonaOutputDTO> getById(
+            @PathVariable String id,
+            @RequestParam(name="outputType", required = false, defaultValue = "simple") String outputType) throws Exception
     {
-        return new ResponseEntity<>(personaService.getById(id), HttpStatus.OK);
+        return new ResponseEntity<>(personaService.getById(id, outputType), HttpStatus.OK);
     }
 
     @GetMapping("/{usuario}/usuario")
-    public ResponseEntity<List<PersonaOutputDTO>> getByUser(@PathVariable String usuario)
+    public ResponseEntity<List<PersonaOutputDTO>> getByUser(
+            @PathVariable String usuario,
+            @RequestParam(name="outputType", required = false, defaultValue = "simple") String outputType)
     {
-        return new ResponseEntity<>(personaService.getByUser(usuario), HttpStatus.OK);
+        return new ResponseEntity<>(personaService.getByUser(usuario,outputType), HttpStatus.OK);
     }
 
     @PostMapping

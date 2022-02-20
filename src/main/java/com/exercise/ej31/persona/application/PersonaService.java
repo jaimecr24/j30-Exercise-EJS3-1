@@ -1,9 +1,11 @@
 package com.exercise.ej31.persona.application;
 
+import com.exercise.ej31.estudiante.infrastructure.EstudiantePersonaOutputDTO;
 import com.exercise.ej31.persona.domain.Persona;
 import com.exercise.ej31.persona.infrastructure.PersonaInputDTO;
 import com.exercise.ej31.persona.infrastructure.PersonaOutputDTO;
 import com.exercise.ej31.persona.infrastructure.PersonaRepo;
+import com.exercise.ej31.profesor.infrastructure.ProfesorPersonaOutputDTO;
 import com.exercise.ej31.shared.NotFoundException;
 import com.exercise.ej31.shared.UnprocesableException;
 import org.springframework.stereotype.Service;
@@ -23,25 +25,48 @@ public class PersonaService implements IPersona {
     }
 
     @Override
-    public List<PersonaOutputDTO> findAll() {
+    public List<PersonaOutputDTO> findAll(String outputType) {
         List<Persona> listaPersona = personaRepo.findAll();
-        List<PersonaOutputDTO> listaPersonaDTO = new ArrayList<>();
-        for (Persona persona:listaPersona) listaPersonaDTO.add(new PersonaOutputDTO(persona));
-        return listaPersonaDTO;
+        List<PersonaOutputDTO> listaDTO = new ArrayList<>();
+        if (outputType!=null && outputType.equals("full")) {
+            for (Persona persona:listaPersona) {
+                if (persona.getProfesor()!=null)
+                    listaDTO.add(new ProfesorPersonaOutputDTO(persona.getProfesor()));
+                else
+                    listaDTO.add(new EstudiantePersonaOutputDTO(persona.getEstudiante()));
+            }
+        }
+        else { // Simple
+            for (Persona persona:listaPersona) listaDTO.add(new PersonaOutputDTO(persona));
+        }
+        return listaDTO;
     }
 
     @Override
-    public List<PersonaOutputDTO> getByUser(String usuario) {
+    public List<PersonaOutputDTO> getByUser(String usuario, String outputType) {
         List<Persona> listaPersona = personaRepo.findByUsuario(usuario);
-        List<PersonaOutputDTO> listaPersonaDTO = new ArrayList<>();
-        for (Persona persona:listaPersona) listaPersonaDTO.add(new PersonaOutputDTO(persona));
-        return listaPersonaDTO;
+        List<PersonaOutputDTO> listaDTO = new ArrayList<>();
+        if (outputType!=null && outputType.equals("full")) {
+            for (Persona persona:listaPersona) {
+                if (persona.getProfesor()!=null)
+                    listaDTO.add(new ProfesorPersonaOutputDTO(persona.getProfesor()));
+                else
+                    listaDTO.add(new EstudiantePersonaOutputDTO(persona.getEstudiante()));
+            }
+        }
+        else { // Simple
+            for (Persona persona:listaPersona) listaDTO.add(new PersonaOutputDTO(persona));
+        }
+        return listaDTO;
     }
 
     @Override
-    public PersonaOutputDTO getById(String id) throws NotFoundException {
+    public PersonaOutputDTO getById(String id, String outputType) throws NotFoundException {
         Persona persona = personaRepo.findById(id).orElseThrow(()->new NotFoundException("id_persona: "+id+" not found."));
-        return new PersonaOutputDTO(persona);
+        if (outputType!=null && outputType.equals("full"))
+            if (persona.getProfesor()!=null) return new ProfesorPersonaOutputDTO(persona.getProfesor());
+            else return new EstudiantePersonaOutputDTO(persona.getEstudiante());
+        else return new PersonaOutputDTO(persona);
     }
 
     @Override

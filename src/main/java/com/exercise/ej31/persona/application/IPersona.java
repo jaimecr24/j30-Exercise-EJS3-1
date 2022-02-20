@@ -7,9 +7,10 @@ import com.exercise.ej31.persona.infrastructure.PersonaOutputDTO;
 import java.util.List;
 
 public interface IPersona {
-    List<PersonaOutputDTO> findAll();
-    List<PersonaOutputDTO> getByUser(String usuario);
-    PersonaOutputDTO getById(String id) throws Exception;
+
+    List<PersonaOutputDTO> findAll(String outputType);
+    List<PersonaOutputDTO> getByUser(String usuario, String outputType);
+    PersonaOutputDTO getById(String id, String outputType) throws Exception;
     PersonaOutputDTO addPersona(PersonaInputDTO personaInputDTO) throws Exception;
     PersonaOutputDTO putPersona(String id, PersonaInputDTO personaInputDTO) throws Exception;
     PersonaOutputDTO delPersona(String id) throws Exception;
