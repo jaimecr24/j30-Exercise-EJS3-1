@@ -100,8 +100,12 @@ public class PersonaService implements IPersona {
     }
 
     @Override
-    public PersonaOutputDTO delPersona(String id) throws NotFoundException {
+    public PersonaOutputDTO delPersona(String id) throws NotFoundException, UnprocesableException {
         Persona persona = personaRepo.findById(id).orElseThrow(()->new NotFoundException("id_persona: "+id+" not found."));
+        // Check for relations
+        if (persona.getProfesor()!=null) throw new UnprocesableException("Error: Persona "+id+" has an associated Profesor");
+        if (persona.getEstudiante()!=null) throw new UnprocesableException("Error: Persona "+id+" has an associated Estudiante");
+        // Construct DTO && delete
         PersonaOutputDTO personaOutputDTO = new PersonaOutputDTO(persona);
         personaRepo.delete(persona);
         return personaOutputDTO;

@@ -1,5 +1,6 @@
 package com.exercise.ej31.profesor.domain;
 
+import com.exercise.ej31.estudiante.domain.Estudiante;
 import com.exercise.ej31.persona.domain.Persona;
 import com.exercise.ej31.shared.StringSequenceIdGenerator;
 import lombok.Data;
@@ -7,6 +8,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,12 +34,9 @@ public class Profesor {
     private String comments;
 
     @NotBlank(message = "branch es nulo")
-    String branch;
+    private String branch;
 
-    //@OneToMany
-    //List<Estudiante> estudiantes;
-
-    //@OneToMany
-    //List<EstudianteAsignatura> estudianteAsignaturaList;
-
+    @OneToMany(mappedBy = "profesor") //
+    private List<Estudiante> estudiantes = new ArrayList<>();
+    // No podemos eliminar un profesor si tiene estudiantes asignados.
 }

@@ -16,6 +16,8 @@ public interface IEstudiante {
 
     EstudiantePersonaOutputDTO addEstudiante(EstudiantePersonaInputDTO inputDTO) throws Exception;
 
+    EstudiantePersonaOutputDTO patchProfesor(String id_estudiante, String id_profesor) throws Exception;
+
     EstudiantePersonaOutputDTO putEstudiante(String id, EstudiantePersonaInputDTO inputDTO) throws Exception;
 
     EstudiantePersonaOutputDTO delEstudiante(String id) throws Exception;

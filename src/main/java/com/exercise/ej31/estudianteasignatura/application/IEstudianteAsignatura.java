@@ -9,7 +9,7 @@ public interface IEstudianteAsignatura {
 
     List<EstudianteAsignaturaOutputDTO> findAll();
 
-    List<EstudianteAsignaturaOutputDTO> findByEstudiante(String id_estudiante);
+    List<EstudianteAsignaturaOutputDTO> findByEstudiante(String id) throws Exception;
 
     EstudianteAsignaturaOutputDTO findById(String id) throws Exception;
 

@@ -1,5 +1,6 @@
 package com.exercise.ej31.profesor.application;
 
+import com.exercise.ej31.estudiante.domain.Estudiante;
 import com.exercise.ej31.persona.domain.Persona;
 import com.exercise.ej31.profesor.domain.Profesor;
 import com.exercise.ej31.profesor.infrastructure.ProfesorPersonaInputDTO;
@@ -71,8 +72,12 @@ public class ProfesorService implements IProfesor {
     }
 
     @Override
-    public ProfesorPersonaOutputDTO delProfesor(String id) throws NotFoundException {
+    public ProfesorPersonaOutputDTO delProfesor(String id) throws NotFoundException, UnprocesableException {
         Profesor profesor = profesorRepo.findById(id).orElseThrow(()->new NotFoundException("id_profesor: "+id+" not found."));
+        List<Estudiante> estudiantes = profesor.getEstudiantes();
+        if (!estudiantes.isEmpty()) {
+            throw new UnprocesableException("Error: Profesor "+id+" has students assigned");
+        }
         ProfesorPersonaOutputDTO outputDTO = new ProfesorPersonaOutputDTO(profesor);
         profesorRepo.delete(profesor);
         return outputDTO;

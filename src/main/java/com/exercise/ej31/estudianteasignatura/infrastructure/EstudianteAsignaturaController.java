@@ -27,6 +27,12 @@ public class EstudianteAsignaturaController {
         return new ResponseEntity<>(estudianteAsignaturaService.findById(id), HttpStatus.OK);
     }
 
+    @GetMapping("{id}/estudiante")
+    public ResponseEntity<List<EstudianteAsignaturaOutputDTO>> findByIdEstudiante(@PathVariable String id) throws Exception
+    {
+        return new ResponseEntity<>(estudianteAsignaturaService.findByEstudiante(id), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<EstudianteAsignaturaOutputDTO> add(@RequestBody EstudianteAsignaturaInputDTO inputDTO) throws Exception
     {

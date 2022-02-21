@@ -3,6 +3,8 @@ package com.exercise.ej31.estudiante.application;
 import com.exercise.ej31.estudiante.domain.Estudiante;
 import com.exercise.ej31.estudiante.infrastructure.*;
 import com.exercise.ej31.persona.domain.Persona;
+import com.exercise.ej31.profesor.domain.Profesor;
+import com.exercise.ej31.profesor.infrastructure.ProfesorRepo;
 import com.exercise.ej31.shared.NotFoundException;
 import com.exercise.ej31.shared.UnprocesableException;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,14 @@ import java.util.List;
 public class EstudianteService implements IEstudiante {
 
     private final EstudianteRepo estudianteRepo;
+    private final ProfesorRepo profesorRepo;
 
-    public EstudianteService(EstudianteRepo estudianteRepo){
+    public EstudianteService(
+            EstudianteRepo estudianteRepo,
+            ProfesorRepo profesorRepo){
         super();
         this.estudianteRepo = estudianteRepo;
+        this.profesorRepo = profesorRepo;
     }
 
     @Override
@@ -44,14 +50,32 @@ public class EstudianteService implements IEstudiante {
     @Override
     public EstudiantePersonaOutputDTO addEstudiante(EstudiantePersonaInputDTO inputDTO) throws UnprocesableException {
         this.validate(inputDTO);
-        Estudiante estudiante = inputDTO.toEstudiante();
+        Profesor profesor;
+        if (inputDTO.getId_profesor()!=null)
+            profesor = profesorRepo.findById(inputDTO.getId_profesor())
+                    .orElseThrow(()->new NotFoundException("id_profesor: "+inputDTO.getId_profesor()+" not found."));
+        else
+            profesor = null; // No profesor assigned
+        Estudiante estudiante = inputDTO.toEstudiante(profesor);
         estudiante.getPersona().setCreated_date(new Date()); // created_date to now.
         estudianteRepo.save(estudiante);
         return new EstudiantePersonaOutputDTO(estudiante);
     }
 
     @Override
+    public EstudiantePersonaOutputDTO patchProfesor(String id_estudiante, String id_profesor) throws NotFoundException {
+        Estudiante estudiante = estudianteRepo.findById(id_estudiante)
+                .orElseThrow(()->new NotFoundException("id_estudiante: "+id_profesor+" not found."));
+        Profesor profesor = profesorRepo.findById(id_profesor)
+                .orElseThrow(()->new NotFoundException("id_profesor: "+id_profesor+" not found."));
+        estudiante.setProfesor(profesor);
+        estudianteRepo.save(estudiante);
+        return new EstudiantePersonaOutputDTO(estudiante);
+    }
+
+    @Override
     public EstudiantePersonaOutputDTO putEstudiante(String id, EstudiantePersonaInputDTO inputDTO) throws NotFoundException,UnprocesableException {
+        // Modifies data except profesor asigned.
         this.validate(inputDTO);
         Estudiante estudiante = estudianteRepo.findById(id).orElseThrow(()->new NotFoundException("id_estudiante: "+id+" not found."));
         Persona persona = estudiante.getPersona();

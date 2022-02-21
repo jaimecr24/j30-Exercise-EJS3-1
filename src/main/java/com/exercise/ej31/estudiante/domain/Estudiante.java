@@ -2,6 +2,7 @@ package com.exercise.ej31.estudiante.domain;
 
 import com.exercise.ej31.estudianteasignatura.domain.EstudianteAsignatura;
 import com.exercise.ej31.persona.domain.Persona;
+import com.exercise.ej31.profesor.domain.Profesor;
 import com.exercise.ej31.shared.StringSequenceIdGenerator;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -36,9 +37,9 @@ public class Estudiante {
 
     private String comments;
 
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "id_profesor")
-    //private String id_profesor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_profesor")
+    private Profesor profesor;
 
     @NotBlank(message = "branch es nulo")
     private String branch;

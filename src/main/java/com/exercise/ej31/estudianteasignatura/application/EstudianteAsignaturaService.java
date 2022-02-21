@@ -36,8 +36,12 @@ public class EstudianteAsignaturaService implements IEstudianteAsignatura{
     }
 
     @Override
-    public List<EstudianteAsignaturaOutputDTO> findByEstudiante(String id_estudiante) {
-        return null;
+    public List<EstudianteAsignaturaOutputDTO> findByEstudiante(String id) throws NotFoundException {
+        Estudiante estudiante = estudianteRepo.findById(id).orElseThrow(()->new NotFoundException("id_estudiante: "+id+" not found."));
+        List<EstudianteAsignatura> asignaturas = estudiante.getEstudianteAsignaturaList();
+        List<EstudianteAsignaturaOutputDTO> listaDTO = new ArrayList<>();
+        for (EstudianteAsignatura asignatura:asignaturas) listaDTO.add(new EstudianteAsignaturaOutputDTO(asignatura));
+        return listaDTO;
     }
 
     @Override

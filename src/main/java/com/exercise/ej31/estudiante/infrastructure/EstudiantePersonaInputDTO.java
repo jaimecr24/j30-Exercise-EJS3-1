@@ -3,6 +3,7 @@ package com.exercise.ej31.estudiante.infrastructure;
 import com.exercise.ej31.estudiante.domain.Estudiante;
 import com.exercise.ej31.persona.domain.Persona;
 
+import com.exercise.ej31.profesor.domain.Profesor;
 import lombok.Data;
 
 import java.util.Date;
@@ -25,8 +26,10 @@ public class EstudiantePersonaInputDTO {
     private Integer num_hours_week;
     private String comments;
     private String branch;
+    private String id_profesor;
 
-    public Estudiante toEstudiante() {
+    public Estudiante toEstudiante(Profesor profesor) {
+        // If profesor == null no Profesor is assigned.
         // We create object Persona
         Persona persona = new Persona();
         persona.setPassword(password);
@@ -46,6 +49,7 @@ public class EstudiantePersonaInputDTO {
         estudiante.setNum_hours_week(num_hours_week);
         estudiante.setComments(comments);
         estudiante.setBranch(branch);
+        estudiante.setProfesor(profesor);
         return estudiante;
     }
 }

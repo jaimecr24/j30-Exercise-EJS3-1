@@ -41,9 +41,17 @@ public class EstudianteController {
         return new ResponseEntity<>(estudianteService.addEstudiante(inputDTO), HttpStatus.OK);
     }
 
+    @PatchMapping("{id_estudiante}/profesor/{id_profesor}")
+    public ResponseEntity<EstudiantePersonaOutputDTO> patch(@PathVariable String id_estudiante, @PathVariable String id_profesor) throws Exception
+    {
+        // Changes the professor assigned to the student
+        return new ResponseEntity<>(estudianteService.patchProfesor(id_estudiante,id_profesor), HttpStatus.OK);
+    }
+
     @PutMapping("{id}")
     public ResponseEntity<EstudiantePersonaOutputDTO> put(@PathVariable String id, @RequestBody EstudiantePersonaInputDTO inputDTO) throws Exception
     {
+        // Modifies data except professor assigned.
         return new ResponseEntity<>(estudianteService.putEstudiante(id,inputDTO), HttpStatus.OK);
     }
 
