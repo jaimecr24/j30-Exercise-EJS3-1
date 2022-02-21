@@ -1,5 +1,6 @@
 package com.exercise.ej31.estudiante.domain;
 
+import com.exercise.ej31.estudianteasignatura.domain.EstudianteAsignatura;
 import com.exercise.ej31.persona.domain.Persona;
 import com.exercise.ej31.shared.StringSequenceIdGenerator;
 import lombok.Data;
@@ -7,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -41,7 +43,7 @@ public class Estudiante {
     @NotBlank(message = "branch es nulo")
     private String branch;
 
-    //@OneToMany
-    //List<EstudianteAsignatura> estudianteAsignaturaList;
+    @OneToMany(mappedBy = "estudiante", cascade = { CascadeType.ALL }) // Nombre del campo con que se relaciona en la otra tabla.
+    private List<EstudianteAsignatura> estudianteAsignaturaList = new ArrayList<>();
 
 }

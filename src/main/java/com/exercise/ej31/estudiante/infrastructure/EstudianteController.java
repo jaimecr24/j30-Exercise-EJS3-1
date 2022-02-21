@@ -42,7 +42,7 @@ public class EstudianteController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<EstudiantePersonaOutputDTO> put(@RequestBody EstudiantePersonaInputDTO inputDTO, @PathVariable String id) throws Exception
+    public ResponseEntity<EstudiantePersonaOutputDTO> put(@PathVariable String id, @RequestBody EstudiantePersonaInputDTO inputDTO) throws Exception
     {
         return new ResponseEntity<>(estudianteService.putEstudiante(id,inputDTO), HttpStatus.OK);
     }
