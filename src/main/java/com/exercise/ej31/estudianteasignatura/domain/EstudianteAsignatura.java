@@ -27,9 +27,9 @@ public class EstudianteAsignatura {
             })
     private String id_asignatura;
 
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "profesor_id")
-    //Profesor profesor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profesor_id")
+    private Profesor profesor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_student") // Nombre que tendrá la columna en esta tabla

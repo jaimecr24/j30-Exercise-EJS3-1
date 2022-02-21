@@ -74,9 +74,11 @@ public class ProfesorService implements IProfesor {
     @Override
     public ProfesorPersonaOutputDTO delProfesor(String id) throws NotFoundException, UnprocesableException {
         Profesor profesor = profesorRepo.findById(id).orElseThrow(()->new NotFoundException("id_profesor: "+id+" not found."));
-        List<Estudiante> estudiantes = profesor.getEstudiantes();
-        if (!estudiantes.isEmpty()) {
+        if (!profesor.getEstudiantes().isEmpty()) {
             throw new UnprocesableException("Error: Profesor "+id+" has students assigned");
+        }
+        if (!profesor.getAsignaturas().isEmpty()) {
+            throw new UnprocesableException("Error: Profesor "+id+" has asignaturas assigned");
         }
         ProfesorPersonaOutputDTO outputDTO = new ProfesorPersonaOutputDTO(profesor);
         profesorRepo.delete(profesor);

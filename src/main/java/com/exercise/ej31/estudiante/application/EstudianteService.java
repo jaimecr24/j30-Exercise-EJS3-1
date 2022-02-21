@@ -79,7 +79,9 @@ public class EstudianteService implements IEstudiante {
         List<EstudianteAsignaturaOutputDTO> listaOuputDTO = new ArrayList<>();
         for (EstudianteAsignaturaInputDTO inputDTO:listaDTO) {
             validateAsignatura(inputDTO);
-            EstudianteAsignatura asignatura = inputDTO.toEstudianteAsignatura(estudiante);
+            Profesor profesor = profesorRepo.findById(inputDTO.getId_profesor())
+                    .orElseThrow(()->new NotFoundException("id_profesor: "+inputDTO.getId_profesor()+" not found."));
+            EstudianteAsignatura asignatura = inputDTO.toEstudianteAsignatura(estudiante,profesor);
             estudianteAsignaturaRepo.save(asignatura);
             listaOuputDTO.add(new EstudianteAsignaturaOutputDTO(asignatura));
         }

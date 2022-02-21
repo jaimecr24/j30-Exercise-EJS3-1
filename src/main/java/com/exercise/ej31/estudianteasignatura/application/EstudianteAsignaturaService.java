@@ -6,6 +6,8 @@ import com.exercise.ej31.estudianteasignatura.domain.EstudianteAsignatura;
 import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaInputDTO;
 import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaOutputDTO;
 import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaRepo;
+import com.exercise.ej31.profesor.domain.Profesor;
+import com.exercise.ej31.profesor.infrastructure.ProfesorRepo;
 import com.exercise.ej31.shared.NotFoundException;
 import com.exercise.ej31.shared.UnprocesableException;
 import org.springframework.stereotype.Service;
@@ -18,13 +20,15 @@ public class EstudianteAsignaturaService implements IEstudianteAsignatura{
 
     private final EstudianteAsignaturaRepo estudianteAsignaturaRepo;
     private final EstudianteRepo estudianteRepo;
+    private final ProfesorRepo profesorRepo;
 
     public EstudianteAsignaturaService(
             EstudianteAsignaturaRepo estudianteAsignaturaRepo,
-            EstudianteRepo estudianteRepo){
+            EstudianteRepo estudianteRepo, ProfesorRepo profesorRepo){
         super();
         this.estudianteAsignaturaRepo = estudianteAsignaturaRepo;
         this.estudianteRepo = estudianteRepo;
+        this.profesorRepo = profesorRepo;
     }
 
     @Override
@@ -57,8 +61,11 @@ public class EstudianteAsignaturaService implements IEstudianteAsignatura{
         // Get estudiante from database.
         Estudiante estudiante = estudianteRepo.findById(inputDTO.getId_estudiante())
                 .orElseThrow(()->new NotFoundException("id_estudiante: "+inputDTO.getId_estudiante()+" not found"));
+        // Get profesor from database.
+        Profesor profesor = profesorRepo.findById(inputDTO.getId_profesor())
+                .orElseThrow(()->new NotFoundException("id_profesor: "+inputDTO.getId_profesor()+" not found"));
         // Construct new estudianteAsignatura && save
-        EstudianteAsignatura estudianteAsignatura = inputDTO.toEstudianteAsignatura(estudiante);
+        EstudianteAsignatura estudianteAsignatura = inputDTO.toEstudianteAsignatura(estudiante,profesor);
         estudianteAsignaturaRepo.save(estudianteAsignatura);
         return new EstudianteAsignaturaOutputDTO(estudianteAsignatura);
     }

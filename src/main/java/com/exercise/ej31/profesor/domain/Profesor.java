@@ -1,6 +1,7 @@
 package com.exercise.ej31.profesor.domain;
 
 import com.exercise.ej31.estudiante.domain.Estudiante;
+import com.exercise.ej31.estudianteasignatura.domain.EstudianteAsignatura;
 import com.exercise.ej31.persona.domain.Persona;
 import com.exercise.ej31.shared.StringSequenceIdGenerator;
 import lombok.Data;
@@ -39,4 +40,7 @@ public class Profesor {
     @OneToMany(mappedBy = "profesor") //
     private List<Estudiante> estudiantes = new ArrayList<>();
     // No podemos eliminar un profesor si tiene estudiantes asignados.
+
+    @OneToMany(mappedBy = "profesor")
+    private List<EstudianteAsignatura> asignaturas = new ArrayList<>();
 }
