@@ -2,6 +2,10 @@ package com.exercise.ej31.estudiante.application;
 
 import com.exercise.ej31.estudiante.domain.Estudiante;
 import com.exercise.ej31.estudiante.infrastructure.*;
+import com.exercise.ej31.estudianteasignatura.domain.EstudianteAsignatura;
+import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaInputDTO;
+import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaOutputDTO;
+import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaRepo;
 import com.exercise.ej31.persona.domain.Persona;
 import com.exercise.ej31.profesor.domain.Profesor;
 import com.exercise.ej31.profesor.infrastructure.ProfesorRepo;
@@ -9,6 +13,7 @@ import com.exercise.ej31.shared.NotFoundException;
 import com.exercise.ej31.shared.UnprocesableException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,13 +23,16 @@ public class EstudianteService implements IEstudiante {
 
     private final EstudianteRepo estudianteRepo;
     private final ProfesorRepo profesorRepo;
+    private final EstudianteAsignaturaRepo estudianteAsignaturaRepo;
 
     public EstudianteService(
             EstudianteRepo estudianteRepo,
-            ProfesorRepo profesorRepo){
+            ProfesorRepo profesorRepo,
+            EstudianteAsignaturaRepo estudianteAsignaturaRepo){
         super();
         this.estudianteRepo = estudianteRepo;
         this.profesorRepo = profesorRepo;
+        this.estudianteAsignaturaRepo = estudianteAsignaturaRepo;
     }
 
     @Override
@@ -62,10 +70,46 @@ public class EstudianteService implements IEstudiante {
         return new EstudiantePersonaOutputDTO(estudiante);
     }
 
+    @Transactional  // Si hay una excepción dentro del método se deshace la transacción
+    @Override
+    public List<EstudianteAsignaturaOutputDTO> addAsignaturas(String id_estudiante, List<EstudianteAsignaturaInputDTO> listaDTO) throws NotFoundException {
+        // Añade una lista de asignaturas a un estudiante
+        Estudiante estudiante = estudianteRepo.findById(id_estudiante)
+                .orElseThrow(()->new NotFoundException("id_estudiante: "+id_estudiante+" not found."));
+        List<EstudianteAsignaturaOutputDTO> listaOuputDTO = new ArrayList<>();
+        for (EstudianteAsignaturaInputDTO inputDTO:listaDTO) {
+            validateAsignatura(inputDTO);
+            EstudianteAsignatura asignatura = inputDTO.toEstudianteAsignatura(estudiante);
+            estudianteAsignaturaRepo.save(asignatura);
+            listaOuputDTO.add(new EstudianteAsignaturaOutputDTO(asignatura));
+        }
+        return listaOuputDTO;
+    }
+
+    @Transactional
+    @Override
+    public List<EstudianteAsignaturaOutputDTO> delAsignaturas(String id_estudiante, List<String> id_asignaturas)
+            throws NotFoundException,UnprocesableException
+    {
+        List<EstudianteAsignaturaOutputDTO> listaOutputDTO = new ArrayList<>();
+        for (String id:id_asignaturas) {
+            EstudianteAsignatura asignatura = estudianteAsignaturaRepo.findById(id)
+                    .orElseThrow(()->new NotFoundException("id_asignatura: "+id+" not found."));
+            // Comprobamos que la asignatura pertenece al estudiante.
+            if (!id_estudiante.equals(asignatura.getEstudiante().getId_student()))
+                throw new UnprocesableException("Estudiante "+id_estudiante+" not has asignatura "+id);
+            // Añadimos DTO a la lista y borramos la asignatura.
+            listaOutputDTO.add(new EstudianteAsignaturaOutputDTO(asignatura));
+            estudianteAsignaturaRepo.delete(asignatura);
+        }
+        return listaOutputDTO;
+    }
+
+
     @Override
     public EstudiantePersonaOutputDTO patchProfesor(String id_estudiante, String id_profesor) throws NotFoundException {
         Estudiante estudiante = estudianteRepo.findById(id_estudiante)
-                .orElseThrow(()->new NotFoundException("id_estudiante: "+id_profesor+" not found."));
+                .orElseThrow(()->new NotFoundException("id_estudiante: "+id_estudiante+" not found."));
         Profesor profesor = profesorRepo.findById(id_profesor)
                 .orElseThrow(()->new NotFoundException("id_profesor: "+id_profesor+" not found."));
         estudiante.setProfesor(profesor);
@@ -120,5 +164,10 @@ public class EstudianteService implements IEstudiante {
         if (inputDTO.getCreated_date()==null) throw new UnprocesableException("Error: Created_date is null");
         if (inputDTO.getNum_hours_week()==null) throw new UnprocesableException("Error: num_hours_week is null");
         if (inputDTO.getBranch()==null) throw new UnprocesableException("Error: branch is null");
+    }
+
+    private void validateAsignatura(EstudianteAsignaturaInputDTO inputDTO) throws UnprocesableException {
+        if (inputDTO.getAsignatura()==null) throw new UnprocesableException("Error: asignatura is null");
+        if (inputDTO.getInitial_date()==null) throw new UnprocesableException("Error: initial date is null");
     }
 }
