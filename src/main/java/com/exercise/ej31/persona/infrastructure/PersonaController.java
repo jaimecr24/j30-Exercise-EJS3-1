@@ -27,7 +27,7 @@ public class PersonaController {
             @PathVariable String id,
             @RequestParam(name="outputType", required = false, defaultValue = "simple") String outputType) throws Exception
     {
-        return new ResponseEntity<>(personaService.getById(id, outputType), HttpStatus.OK);
+        return new ResponseEntity<>(personaService.getExtendedById(id, outputType), HttpStatus.OK);
     }
 
     @GetMapping("/{usuario}/usuario")

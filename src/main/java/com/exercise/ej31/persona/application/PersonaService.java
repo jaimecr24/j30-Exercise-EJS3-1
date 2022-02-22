@@ -1,10 +1,12 @@
 package com.exercise.ej31.persona.application;
 
+import com.exercise.ej31.estudiante.infrastructure.EstudianteExtendedOutputDTO;
 import com.exercise.ej31.estudiante.infrastructure.EstudiantePersonaOutputDTO;
 import com.exercise.ej31.persona.domain.Persona;
 import com.exercise.ej31.persona.infrastructure.PersonaInputDTO;
 import com.exercise.ej31.persona.infrastructure.PersonaOutputDTO;
 import com.exercise.ej31.persona.infrastructure.PersonaRepo;
+import com.exercise.ej31.profesor.infrastructure.ProfesorExtendedOutputDTO;
 import com.exercise.ej31.profesor.infrastructure.ProfesorPersonaOutputDTO;
 import com.exercise.ej31.shared.NotFoundException;
 import com.exercise.ej31.shared.UnprocesableException;
@@ -66,6 +68,15 @@ public class PersonaService implements IPersona {
         if (outputType!=null && outputType.equals("full"))
             if (persona.getProfesor()!=null) return new ProfesorPersonaOutputDTO(persona.getProfesor());
             else return new EstudiantePersonaOutputDTO(persona.getEstudiante());
+        else return new PersonaOutputDTO(persona);
+    }
+
+    @Override
+    public PersonaOutputDTO getExtendedById(String id, String outputType) throws NotFoundException {
+        Persona persona = personaRepo.findById(id).orElseThrow(()->new NotFoundException("id_persona: "+id+" not found."));
+        if (outputType!=null && outputType.equals("full"))
+            if (persona.getProfesor()!=null) return new ProfesorExtendedOutputDTO(persona.getProfesor());
+            else return new EstudianteExtendedOutputDTO(persona.getEstudiante());
         else return new PersonaOutputDTO(persona);
     }
 

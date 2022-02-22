@@ -5,8 +5,6 @@ import com.exercise.ej31.persona.infrastructure.PersonaOutputDTO;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Getter
 @Setter
 public class EstudiantePersonaOutputDTO extends PersonaOutputDTO {
