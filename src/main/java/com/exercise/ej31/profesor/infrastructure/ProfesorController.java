@@ -1,5 +1,7 @@
 package com.exercise.ej31.profesor.infrastructure;
 
+import com.exercise.ej31.estudiante.infrastructure.EstudianteOutputDTO;
+import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaOutputDTO;
 import com.exercise.ej31.profesor.application.IProfesor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,18 @@ public class ProfesorController {
     public ResponseEntity<ProfesorPersonaOutputDTO> getById(@PathVariable String id) throws Exception
     {
         return new ResponseEntity<>(profesorService.getById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("{id}/estudiantes")
+    public ResponseEntity<List<EstudianteOutputDTO>> getEstudiantes(@PathVariable String id) throws Exception
+    {
+        return new ResponseEntity<>(profesorService.getEstudiantes(id), HttpStatus.OK);
+    }
+
+    @GetMapping("{id}/asignaturas")
+    public ResponseEntity<List<EstudianteAsignaturaOutputDTO>> getAsignaturas(@PathVariable String id) throws Exception
+    {
+        return new ResponseEntity<>(profesorService.getAsignaturas(id), HttpStatus.OK);
     }
 
     @PostMapping

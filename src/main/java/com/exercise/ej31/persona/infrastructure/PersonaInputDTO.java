@@ -15,7 +15,7 @@ public class PersonaInputDTO {
     String personal_email;
     String city;
     Boolean active;
-    Date created_date;
+    //Date created_date; // Lo asigna automáticamente a Now() al crearlo. Nunca será nulo.
     String imagen_url;
     Date termination_date;
 
@@ -29,7 +29,7 @@ public class PersonaInputDTO {
         persona.setPersonal_email(personal_email);
         persona.setCity(city);
         persona.setActive(active);
-        persona.setCreated_date(created_date);
+        //persona.setCreated_date(created_date);
         persona.setImagen_url(imagen_url);
         persona.setTermination_date(termination_date);
         return persona;

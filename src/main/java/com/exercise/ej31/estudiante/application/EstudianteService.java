@@ -78,9 +78,10 @@ public class EstudianteService implements IEstudiante {
                 .orElseThrow(()->new NotFoundException("id_estudiante: "+id_estudiante+" not found."));
         List<EstudianteAsignaturaOutputDTO> listaOuputDTO = new ArrayList<>();
         for (EstudianteAsignaturaInputDTO inputDTO:listaDTO) {
-            validateAsignatura(inputDTO);
+            validateAsignatura(inputDTO); // Check the necessary fields hasn't null value
             Profesor profesor = profesorRepo.findById(inputDTO.getId_profesor())
-                    .orElseThrow(()->new NotFoundException("id_profesor: "+inputDTO.getId_profesor()+" not found."));
+                    .orElseThrow(()->new NotFoundException("asignatura "+inputDTO.getAsignatura()+" has no valid profesor assigned"));
+            // We create a new EstudianteAsignatura object with his profesor and estudiante
             EstudianteAsignatura asignatura = inputDTO.toEstudianteAsignatura(estudiante,profesor);
             estudianteAsignaturaRepo.save(asignatura);
             listaOuputDTO.add(new EstudianteAsignaturaOutputDTO(asignatura));
@@ -135,7 +136,7 @@ public class EstudianteService implements IEstudiante {
         persona.setPersonal_email(inputDTO.getPersonal_email());
         persona.setCity(inputDTO.getCity());
         persona.setActive(inputDTO.getActive());
-        persona.setCreated_date(inputDTO.getCreated_date());
+        //persona.setCreated_date(inputDTO.getCreated_date());
         persona.setImagen_url(inputDTO.getImagen_url());
         persona.setTermination_date(inputDTO.getTermination_date());
         estudiante.setNum_hours_week(inputDTO.getNum_hours_week());
@@ -163,13 +164,14 @@ public class EstudianteService implements IEstudiante {
         if (inputDTO.getPersonal_email()==null) throw new UnprocesableException("Error: Personal_email is null.");
         if (inputDTO.getCity()==null) throw new UnprocesableException("Error: City is null.");
         if (inputDTO.getActive()==null) throw new UnprocesableException("Error: Active is null");
-        if (inputDTO.getCreated_date()==null) throw new UnprocesableException("Error: Created_date is null");
+        //if (inputDTO.getCreated_date()==null) throw new UnprocesableException("Error: Created_date is null");
         if (inputDTO.getNum_hours_week()==null) throw new UnprocesableException("Error: num_hours_week is null");
         if (inputDTO.getBranch()==null) throw new UnprocesableException("Error: branch is null");
     }
 
     private void validateAsignatura(EstudianteAsignaturaInputDTO inputDTO) throws UnprocesableException {
         if (inputDTO.getAsignatura()==null) throw new UnprocesableException("Error: asignatura is null");
-        if (inputDTO.getInitial_date()==null) throw new UnprocesableException("Error: initial date is null");
+        if (inputDTO.getInitial_date()==null) throw new UnprocesableException("Error: initial_date of "+inputDTO.getAsignatura()+" is null");
+        if (inputDTO.getId_profesor()==null) throw new UnprocesableException("Error: id_profesor of "+inputDTO.getAsignatura()+" is null");
     }
 }

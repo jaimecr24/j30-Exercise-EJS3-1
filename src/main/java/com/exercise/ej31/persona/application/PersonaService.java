@@ -73,7 +73,7 @@ public class PersonaService implements IPersona {
     public PersonaOutputDTO addPersona(PersonaInputDTO personaInputDTO) throws UnprocesableException {
         this.validate(personaInputDTO);
         Persona persona = personaInputDTO.toPersona();
-        persona.setCreated_date(new Date());
+        persona.setCreated_date(new Date()); // Created date to now.
         personaRepo.save(persona);
         return new PersonaOutputDTO(persona);
     }
@@ -92,7 +92,7 @@ public class PersonaService implements IPersona {
         persona.setPersonal_email(personaInputDTO.getPersonal_email());
         persona.setCity(personaInputDTO.getCity());
         persona.setActive(personaInputDTO.getActive());
-        persona.setCreated_date(personaInputDTO.getCreated_date());
+        //persona.setCreated_date(personaInputDTO.getCreated_date());
         persona.setImagen_url(personaInputDTO.getImagen_url());
         persona.setTermination_date(personaInputDTO.getTermination_date());
         personaRepo.save(persona);
@@ -111,11 +111,6 @@ public class PersonaService implements IPersona {
         return personaOutputDTO;
     }
 
-    @Override
-    public Persona getObject(String id) throws NotFoundException {
-        return personaRepo.findById(id).orElseThrow(()->new NotFoundException("id_persona: "+id+" not found."));
-    }
-
     private void validate(PersonaInputDTO personaInputDTO) throws UnprocesableException{
         String usuario = personaInputDTO.getUsuario();
         if (usuario==null) throw new UnprocesableException("Error: user is null.");
@@ -126,7 +121,7 @@ public class PersonaService implements IPersona {
         if (personaInputDTO.getPersonal_email()==null) throw new UnprocesableException("Error: Personal_email is null.");
         if (personaInputDTO.getCity()==null) throw new UnprocesableException("Error: City is null.");
         if (personaInputDTO.getActive()==null) throw new UnprocesableException("Error: Active is null");
-        if (personaInputDTO.getCreated_date()==null) throw new UnprocesableException("Error: Created_date is null");
+        //if (personaInputDTO.getCreated_date()==null) throw new UnprocesableException("Error: Created_date is null");
     }
 }
 

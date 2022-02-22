@@ -1,6 +1,9 @@
 package com.exercise.ej31.profesor.application;
 
 import com.exercise.ej31.estudiante.domain.Estudiante;
+import com.exercise.ej31.estudiante.infrastructure.EstudianteOutputDTO;
+import com.exercise.ej31.estudianteasignatura.domain.EstudianteAsignatura;
+import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaOutputDTO;
 import com.exercise.ej31.persona.domain.Persona;
 import com.exercise.ej31.profesor.domain.Profesor;
 import com.exercise.ej31.profesor.infrastructure.ProfesorPersonaInputDTO;
@@ -39,10 +42,28 @@ public class ProfesorService implements IProfesor {
     }
 
     @Override
+    public List<EstudianteOutputDTO> getEstudiantes(String id) throws NotFoundException {
+        Profesor profesor = profesorRepo.findById(id).orElseThrow(()->new NotFoundException("id_profesor: "+id+" not found."));
+        List<EstudianteOutputDTO> listaOutputDTO = new ArrayList<>();
+        List<Estudiante> listaEstudiantes = profesor.getEstudiantes();
+        for (Estudiante e:listaEstudiantes) listaOutputDTO.add(new EstudianteOutputDTO(e));
+        return listaOutputDTO;
+    }
+
+    @Override
+    public List<EstudianteAsignaturaOutputDTO> getAsignaturas(String id) throws NotFoundException {
+        Profesor profesor = profesorRepo.findById(id).orElseThrow(()->new NotFoundException("id_profesor: "+id+" not found."));
+        List<EstudianteAsignaturaOutputDTO> listaOutputDTO = new ArrayList<>();
+        List<EstudianteAsignatura> listaAsignaturas = profesor.getAsignaturas();
+        for (EstudianteAsignatura e:listaAsignaturas) listaOutputDTO.add(new EstudianteAsignaturaOutputDTO(e));
+        return listaOutputDTO;
+    }
+
+    @Override
     public ProfesorPersonaOutputDTO addProfesor(ProfesorPersonaInputDTO inputDTO) throws UnprocesableException {
         this.validate(inputDTO);
         Profesor profesor = inputDTO.toProfesor();
-        profesor.getPersona().setCreated_date(new Date());
+        profesor.getPersona().setCreated_date(new Date()); // Created_date to now.
         profesorRepo.save(profesor);
         return new ProfesorPersonaOutputDTO(profesor);
     }
@@ -62,7 +83,7 @@ public class ProfesorService implements IProfesor {
         persona.setPersonal_email(inputDTO.getPersonal_email());
         persona.setCity(inputDTO.getCity());
         persona.setActive(inputDTO.getActive());
-        persona.setCreated_date(inputDTO.getCreated_date());
+        //persona.setCreated_date(inputDTO.getCreated_date());
         persona.setImagen_url(inputDTO.getImagen_url());
         persona.setTermination_date(inputDTO.getTermination_date());
         profesor.setComments(inputDTO.getComments());
@@ -95,7 +116,7 @@ public class ProfesorService implements IProfesor {
         if (inputDTO.getPersonal_email()==null) throw new UnprocesableException("Error: Personal_email is null.");
         if (inputDTO.getCity()==null) throw new UnprocesableException("Error: City is null.");
         if (inputDTO.getActive()==null) throw new UnprocesableException("Error: Active is null");
-        if (inputDTO.getCreated_date()==null) throw new UnprocesableException("Error: Created_date is null");
+        //if (inputDTO.getCreated_date()==null) throw new UnprocesableException("Error: Created_date is null");
         if (inputDTO.getBranch()==null) throw new UnprocesableException("Error: branch is null");
     }
 }
