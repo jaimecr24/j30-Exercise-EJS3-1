@@ -9,7 +9,7 @@ import java.util.List;
 public interface IPersona {
 
     PersonaListaOutputDTO findAll(String outputType);
-    List<PersonaOutputDTO> getByUser(String usuario, String outputType);
+    PersonaListaOutputDTO getByUser(String usuario, String outputType);
     PersonaOutputDTO getById(String id, String outputType) throws Exception;
     PersonaOutputDTO getExtendedById(String id, String outputType) throws Exception;
     PersonaOutputDTO addPersona(PersonaInputDTO personaInputDTO) throws Exception;

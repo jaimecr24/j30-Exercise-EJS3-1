@@ -31,7 +31,17 @@ public class PersonaService implements IPersona {
     @Override
     public PersonaListaOutputDTO findAll(String outputType) {
         List<Persona> listaPersona = personaRepo.findAll();
-        List<PersonaOutputDTO> listaDTO = listaPersona.stream()
+        return convertToListaOutputDTO(listaPersona,outputType);
+    }
+
+    @Override
+    public PersonaListaOutputDTO getByUser(String usuario, String outputType) {
+        List<Persona> listaPersona = personaRepo.findByUsuario(usuario);
+        return convertToListaOutputDTO(listaPersona,outputType);
+    }
+
+    private PersonaListaOutputDTO convertToListaOutputDTO(List<Persona> lista, String outputType){
+        List<PersonaOutputDTO> listaDTO = lista.stream()
                 .map(e -> (outputType!=null && outputType.equals("full"))
                         ? (e.getProfesor()!=null)
                         ? new ProfesorPersonaOutputDTO(e.getProfesor()) // if (outputType=="full" and persona.getProfesor!=null)
@@ -39,24 +49,6 @@ public class PersonaService implements IPersona {
                         : new PersonaOutputDTO(e)) // if (outputType==null || outputType!="full")
                 .collect(Collectors.toList());
         return new PersonaListaOutputDTO(listaDTO,listaDTO.size());
-    }
-
-    @Override
-    public List<PersonaOutputDTO> getByUser(String usuario, String outputType) {
-        List<Persona> listaPersona = personaRepo.findByUsuario(usuario);
-        List<PersonaOutputDTO> listaDTO = new ArrayList<>();
-        if (outputType!=null && outputType.equals("full")) {
-            for (Persona persona:listaPersona) {
-                if (persona.getProfesor()!=null)
-                    listaDTO.add(new ProfesorPersonaOutputDTO(persona.getProfesor()));
-                else
-                    listaDTO.add(new EstudiantePersonaOutputDTO(persona.getEstudiante()));
-            }
-        }
-        else { // Simple
-            for (Persona persona:listaPersona) listaDTO.add(new PersonaOutputDTO(persona));
-        }
-        return listaDTO;
     }
 
     @Override

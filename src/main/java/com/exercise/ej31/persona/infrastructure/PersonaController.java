@@ -31,7 +31,7 @@ public class PersonaController {
     }
 
     @GetMapping("/{usuario}/usuario")
-    public ResponseEntity<List<PersonaOutputDTO>> getByUser(
+    public ResponseEntity<PersonaListaOutputDTO> getByUser(
             @PathVariable String usuario,
             @RequestParam(name="outputType", required = false, defaultValue = "simple") String outputType)
     {
