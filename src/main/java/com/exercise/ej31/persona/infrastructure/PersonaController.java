@@ -16,7 +16,7 @@ public class PersonaController {
     IPersona personaService;
 
     @GetMapping
-    public ResponseEntity<List<PersonaOutputDTO>> findAll(
+    public ResponseEntity<PersonaListaOutputDTO> findAll(
             @RequestParam(name="outputType", required = false, defaultValue = "simple") String outputType)
     {
         return new ResponseEntity<>(personaService.findAll(outputType), HttpStatus.OK);

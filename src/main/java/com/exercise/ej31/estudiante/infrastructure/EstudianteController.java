@@ -2,7 +2,8 @@ package com.exercise.ej31.estudiante.infrastructure;
 
 import com.exercise.ej31.estudiante.application.IEstudiante;
 import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaInputDTO;
-import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaOutputDTO;
+import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaListaOutputDTO;
+import com.exercise.ej31.persona.infrastructure.OutputDTO;
 import com.exercise.ej31.shared.UnprocesableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,19 +20,20 @@ public class EstudianteController {
     IEstudiante estudianteService;
 
     @GetMapping
-    public ResponseEntity<List<EstudiantePersonaOutputDTO>> findAll()
+    public ResponseEntity<EstudiantePersonaListaOutputDTO> findAll()
     {
         return new ResponseEntity<>(estudianteService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Object> getById(@PathVariable String id, @RequestParam(name = "outputType") String outputType) throws Exception
+    public ResponseEntity<OutputDTO> getById(@PathVariable String id, @RequestParam(name = "outputType") String outputType) throws Exception
     {
         if (outputType.equals("simple")) {
+            // return a EstudianteOutputDTO extends OutputDTO
             return new ResponseEntity<>(estudianteService.getSimpleById(id), HttpStatus.OK);
         }
-        else if (outputType.equals("full"))
-        {
+        else if (outputType.equals("full")) {
+            // return a EstudiantePersonaOutputDTO extends PersonaOutputDTO extends OutputDTO
             return new ResponseEntity<>(estudianteService.getFullById(id), HttpStatus.OK);
         }
         else throw new UnprocesableException("Error: wrong value in outputType");
@@ -44,7 +46,7 @@ public class EstudianteController {
     }
 
     @PostMapping("{id}/asignaturas")
-    public ResponseEntity<List<EstudianteAsignaturaOutputDTO>> addAsignaturas(
+    public ResponseEntity<EstudianteAsignaturaListaOutputDTO> addAsignaturas(
             @PathVariable String id,
             @RequestBody List<EstudianteAsignaturaInputDTO> listDTO) throws Exception
     {
@@ -52,7 +54,7 @@ public class EstudianteController {
     }
 
     @DeleteMapping("{id}/asignaturas")
-    public ResponseEntity<List<EstudianteAsignaturaOutputDTO>> delAsignaturas(
+    public ResponseEntity<EstudianteAsignaturaListaOutputDTO> delAsignaturas(
             @PathVariable String id,
             @RequestBody List<String> id_asignaturas) throws Exception
     {

@@ -4,6 +4,7 @@ import com.exercise.ej31.estudiante.domain.Estudiante;
 import com.exercise.ej31.estudiante.infrastructure.*;
 import com.exercise.ej31.estudianteasignatura.domain.EstudianteAsignatura;
 import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaInputDTO;
+import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaListaOutputDTO;
 import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaOutputDTO;
 import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaRepo;
 import com.exercise.ej31.persona.domain.Persona;
@@ -17,6 +18,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EstudianteService implements IEstudiante {
@@ -36,11 +38,12 @@ public class EstudianteService implements IEstudiante {
     }
 
     @Override
-    public List<EstudiantePersonaOutputDTO> findAll() {
+    public EstudiantePersonaListaOutputDTO findAll() {
         List<Estudiante> listaEstudiante = estudianteRepo.findAll();
-        List<EstudiantePersonaOutputDTO> listaDTO = new ArrayList<>();
-        for (Estudiante estudiante:listaEstudiante) listaDTO.add(new EstudiantePersonaOutputDTO(estudiante));
-        return listaDTO;
+        List<EstudiantePersonaOutputDTO> listaDTO = listaEstudiante.stream()
+                .map(EstudiantePersonaOutputDTO::new).collect(Collectors.toList());
+        //for (Estudiante estudiante:listaEstudiante) listaDTO.add(new EstudiantePersonaOutputDTO(estudiante));
+        return new EstudiantePersonaListaOutputDTO(listaDTO,listaDTO.size());
     }
 
     @Override
@@ -72,7 +75,7 @@ public class EstudianteService implements IEstudiante {
 
     @Transactional  // Si hay una excepción dentro del método se deshace la transacción
     @Override
-    public List<EstudianteAsignaturaOutputDTO> addAsignaturas(String id_estudiante, List<EstudianteAsignaturaInputDTO> listaDTO) throws NotFoundException {
+    public EstudianteAsignaturaListaOutputDTO addAsignaturas(String id_estudiante, List<EstudianteAsignaturaInputDTO> listaDTO) throws NotFoundException {
         // Añade una lista de asignaturas a un estudiante
         Estudiante estudiante = estudianteRepo.findById(id_estudiante)
                 .orElseThrow(()->new NotFoundException("id_estudiante: "+id_estudiante+" not found."));
@@ -86,12 +89,12 @@ public class EstudianteService implements IEstudiante {
             estudianteAsignaturaRepo.save(asignatura);
             listaOuputDTO.add(new EstudianteAsignaturaOutputDTO(asignatura));
         }
-        return listaOuputDTO;
+        return new EstudianteAsignaturaListaOutputDTO(listaOuputDTO,listaOuputDTO.size());
     }
 
     @Transactional
     @Override
-    public List<EstudianteAsignaturaOutputDTO> delAsignaturas(String id_estudiante, List<String> id_asignaturas)
+    public EstudianteAsignaturaListaOutputDTO delAsignaturas(String id_estudiante, List<String> id_asignaturas)
             throws NotFoundException,UnprocesableException
     {
         List<EstudianteAsignaturaOutputDTO> listaOutputDTO = new ArrayList<>();
@@ -105,7 +108,7 @@ public class EstudianteService implements IEstudiante {
             listaOutputDTO.add(new EstudianteAsignaturaOutputDTO(asignatura));
             estudianteAsignaturaRepo.delete(asignatura);
         }
-        return listaOutputDTO;
+        return new EstudianteAsignaturaListaOutputDTO(listaOutputDTO,listaOutputDTO.size());
     }
 
 

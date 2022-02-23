@@ -1,21 +1,24 @@
 package com.exercise.ej31.profesor.application;
 
 import com.exercise.ej31.estudiante.domain.Estudiante;
+import com.exercise.ej31.estudiante.infrastructure.EstudianteListaOutputDTO;
 import com.exercise.ej31.estudiante.infrastructure.EstudianteOutputDTO;
 import com.exercise.ej31.estudianteasignatura.domain.EstudianteAsignatura;
+import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaListaOutputDTO;
 import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaOutputDTO;
 import com.exercise.ej31.persona.domain.Persona;
 import com.exercise.ej31.profesor.domain.Profesor;
 import com.exercise.ej31.profesor.infrastructure.ProfesorPersonaInputDTO;
+import com.exercise.ej31.profesor.infrastructure.ProfesorPersonaListaOutputDTO;
 import com.exercise.ej31.profesor.infrastructure.ProfesorPersonaOutputDTO;
 import com.exercise.ej31.profesor.infrastructure.ProfesorRepo;
 import com.exercise.ej31.shared.NotFoundException;
 import com.exercise.ej31.shared.UnprocesableException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProfesorService implements IProfesor {
@@ -28,11 +31,10 @@ public class ProfesorService implements IProfesor {
     }
 
     @Override
-    public List<ProfesorPersonaOutputDTO> findAll() {
+    public ProfesorPersonaListaOutputDTO findAll() {
         List<Profesor> listaProfesor = profesorRepo.findAll();
-        List<ProfesorPersonaOutputDTO> listaDTO = new ArrayList<>();
-        for (Profesor profesor:listaProfesor) listaDTO.add(new ProfesorPersonaOutputDTO(profesor));
-        return listaDTO;
+        List<ProfesorPersonaOutputDTO> listaDTO = listaProfesor.stream().map(ProfesorPersonaOutputDTO::new).collect(Collectors.toList());
+        return new ProfesorPersonaListaOutputDTO(listaDTO,listaDTO.size());
     }
 
     @Override
@@ -42,21 +44,19 @@ public class ProfesorService implements IProfesor {
     }
 
     @Override
-    public List<EstudianteOutputDTO> getEstudiantes(String id) throws NotFoundException {
+    public EstudianteListaOutputDTO getEstudiantes(String id) throws NotFoundException {
         Profesor profesor = profesorRepo.findById(id).orElseThrow(()->new NotFoundException("id_profesor: "+id+" not found."));
-        List<EstudianteOutputDTO> listaOutputDTO = new ArrayList<>();
         List<Estudiante> listaEstudiantes = profesor.getEstudiantes();
-        for (Estudiante e:listaEstudiantes) listaOutputDTO.add(new EstudianteOutputDTO(e));
-        return listaOutputDTO;
+        List<EstudianteOutputDTO> listaOutputDTO = listaEstudiantes.stream().map(EstudianteOutputDTO::new).collect(Collectors.toList());
+        return new EstudianteListaOutputDTO(listaOutputDTO, listaOutputDTO.size());
     }
 
     @Override
-    public List<EstudianteAsignaturaOutputDTO> getAsignaturas(String id) throws NotFoundException {
+    public EstudianteAsignaturaListaOutputDTO getAsignaturas(String id) throws NotFoundException {
         Profesor profesor = profesorRepo.findById(id).orElseThrow(()->new NotFoundException("id_profesor: "+id+" not found."));
-        List<EstudianteAsignaturaOutputDTO> listaOutputDTO = new ArrayList<>();
         List<EstudianteAsignatura> listaAsignaturas = profesor.getAsignaturas();
-        for (EstudianteAsignatura e:listaAsignaturas) listaOutputDTO.add(new EstudianteAsignaturaOutputDTO(e));
-        return listaOutputDTO;
+        List<EstudianteAsignaturaOutputDTO> listaOutputDTO = listaAsignaturas.stream().map(EstudianteAsignaturaOutputDTO::new).collect(Collectors.toList());
+        return new EstudianteAsignaturaListaOutputDTO(listaOutputDTO,listaOutputDTO.size());
     }
 
     @Override

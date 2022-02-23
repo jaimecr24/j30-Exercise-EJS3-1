@@ -4,6 +4,7 @@ import com.exercise.ej31.estudiante.domain.Estudiante;
 import com.exercise.ej31.estudiante.infrastructure.EstudianteRepo;
 import com.exercise.ej31.estudianteasignatura.domain.EstudianteAsignatura;
 import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaInputDTO;
+import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaListaOutputDTO;
 import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaOutputDTO;
 import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaRepo;
 import com.exercise.ej31.profesor.domain.Profesor;
@@ -12,8 +13,8 @@ import com.exercise.ej31.shared.NotFoundException;
 import com.exercise.ej31.shared.UnprocesableException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EstudianteAsignaturaService implements IEstudianteAsignatura{
@@ -32,20 +33,18 @@ public class EstudianteAsignaturaService implements IEstudianteAsignatura{
     }
 
     @Override
-    public List<EstudianteAsignaturaOutputDTO> findAll() {
+    public EstudianteAsignaturaListaOutputDTO findAll() {
         List<EstudianteAsignatura> asignaturas = estudianteAsignaturaRepo.findAll();
-        List<EstudianteAsignaturaOutputDTO> listaDTO = new ArrayList<>();
-        for (EstudianteAsignatura asignatura:asignaturas) listaDTO.add(new EstudianteAsignaturaOutputDTO(asignatura));
-        return listaDTO;
+        List<EstudianteAsignaturaOutputDTO> listaDTO = asignaturas.stream().map(EstudianteAsignaturaOutputDTO::new).collect(Collectors.toList());
+        return new EstudianteAsignaturaListaOutputDTO(listaDTO,listaDTO.size());
     }
 
     @Override
-    public List<EstudianteAsignaturaOutputDTO> findByEstudiante(String id) throws NotFoundException {
+    public EstudianteAsignaturaListaOutputDTO findByEstudiante(String id) throws NotFoundException {
         Estudiante estudiante = estudianteRepo.findById(id).orElseThrow(()->new NotFoundException("id_estudiante: "+id+" not found."));
         List<EstudianteAsignatura> asignaturas = estudiante.getEstudianteAsignaturaList();
-        List<EstudianteAsignaturaOutputDTO> listaDTO = new ArrayList<>();
-        for (EstudianteAsignatura asignatura:asignaturas) listaDTO.add(new EstudianteAsignaturaOutputDTO(asignatura));
-        return listaDTO;
+        List<EstudianteAsignaturaOutputDTO> listaDTO = asignaturas.stream().map(EstudianteAsignaturaOutputDTO::new).collect(Collectors.toList());
+        return new EstudianteAsignaturaListaOutputDTO(listaDTO,listaDTO.size());
     }
 
     @Override

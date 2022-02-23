@@ -1,11 +1,12 @@
 package com.exercise.ej31.persona.application;
 
-import com.exercise.ej31.estudiante.infrastructure.EstudianteExtendedOutputDTO;
-import com.exercise.ej31.estudiante.infrastructure.EstudiantePersonaOutputDTO;
 import com.exercise.ej31.persona.domain.Persona;
 import com.exercise.ej31.persona.infrastructure.PersonaInputDTO;
+import com.exercise.ej31.persona.infrastructure.PersonaListaOutputDTO;
 import com.exercise.ej31.persona.infrastructure.PersonaOutputDTO;
 import com.exercise.ej31.persona.infrastructure.PersonaRepo;
+import com.exercise.ej31.estudiante.infrastructure.EstudianteExtendedOutputDTO;
+import com.exercise.ej31.estudiante.infrastructure.EstudiantePersonaOutputDTO;
 import com.exercise.ej31.profesor.infrastructure.ProfesorExtendedOutputDTO;
 import com.exercise.ej31.profesor.infrastructure.ProfesorPersonaOutputDTO;
 import com.exercise.ej31.shared.NotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonaService implements IPersona {
@@ -27,21 +29,16 @@ public class PersonaService implements IPersona {
     }
 
     @Override
-    public List<PersonaOutputDTO> findAll(String outputType) {
+    public PersonaListaOutputDTO findAll(String outputType) {
         List<Persona> listaPersona = personaRepo.findAll();
-        List<PersonaOutputDTO> listaDTO = new ArrayList<>();
-        if (outputType!=null && outputType.equals("full")) {
-            for (Persona persona:listaPersona) {
-                if (persona.getProfesor()!=null)
-                    listaDTO.add(new ProfesorPersonaOutputDTO(persona.getProfesor()));
-                else
-                    listaDTO.add(new EstudiantePersonaOutputDTO(persona.getEstudiante()));
-            }
-        }
-        else { // Simple
-            for (Persona persona:listaPersona) listaDTO.add(new PersonaOutputDTO(persona));
-        }
-        return listaDTO;
+        List<PersonaOutputDTO> listaDTO = listaPersona.stream()
+                .map(e -> (outputType!=null && outputType.equals("full"))
+                        ? (e.getProfesor()!=null)
+                        ? new ProfesorPersonaOutputDTO(e.getProfesor()) // if (outputType=="full" and persona.getProfesor!=null)
+                        : new EstudiantePersonaOutputDTO(e.getEstudiante()) // if (outputType=="full" and persona.getProfesor==null)
+                        : new PersonaOutputDTO(e)) // if (outputType==null || outputType!="full")
+                .collect(Collectors.toList());
+        return new PersonaListaOutputDTO(listaDTO,listaDTO.size());
     }
 
     @Override

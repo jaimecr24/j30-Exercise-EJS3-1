@@ -1,14 +1,12 @@
 package com.exercise.ej31.profesor.infrastructure;
 
-import com.exercise.ej31.estudiante.infrastructure.EstudianteOutputDTO;
-import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaOutputDTO;
+import com.exercise.ej31.estudiante.infrastructure.EstudianteListaOutputDTO;
+import com.exercise.ej31.estudianteasignatura.infrastructure.EstudianteAsignaturaListaOutputDTO;
 import com.exercise.ej31.profesor.application.IProfesor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/profesor")
@@ -18,7 +16,7 @@ public class ProfesorController {
     IProfesor profesorService;
 
     @GetMapping
-    public ResponseEntity<List<ProfesorPersonaOutputDTO>> findAll()
+    public ResponseEntity<ProfesorPersonaListaOutputDTO> findAll()
     {
         return new ResponseEntity<>(profesorService.findAll(), HttpStatus.OK);
     }
@@ -30,13 +28,13 @@ public class ProfesorController {
     }
 
     @GetMapping("{id}/estudiantes")
-    public ResponseEntity<List<EstudianteOutputDTO>> getEstudiantes(@PathVariable String id) throws Exception
+    public ResponseEntity<EstudianteListaOutputDTO> getEstudiantes(@PathVariable String id) throws Exception
     {
         return new ResponseEntity<>(profesorService.getEstudiantes(id), HttpStatus.OK);
     }
 
     @GetMapping("{id}/asignaturas")
-    public ResponseEntity<List<EstudianteAsignaturaOutputDTO>> getAsignaturas(@PathVariable String id) throws Exception
+    public ResponseEntity<EstudianteAsignaturaListaOutputDTO> getAsignaturas(@PathVariable String id) throws Exception
     {
         return new ResponseEntity<>(profesorService.getAsignaturas(id), HttpStatus.OK);
     }

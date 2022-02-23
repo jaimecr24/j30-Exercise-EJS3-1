@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/asignatura")
 public class EstudianteAsignaturaController {
@@ -16,7 +14,7 @@ public class EstudianteAsignaturaController {
     IEstudianteAsignatura estudianteAsignaturaService;
 
     @GetMapping
-    public ResponseEntity<List<EstudianteAsignaturaOutputDTO>> findAll()
+    public ResponseEntity<EstudianteAsignaturaListaOutputDTO> findAll()
     {
         return new ResponseEntity<>(estudianteAsignaturaService.findAll(), HttpStatus.OK);
     }
@@ -28,7 +26,7 @@ public class EstudianteAsignaturaController {
     }
 
     @GetMapping("{id}/estudiante")
-    public ResponseEntity<List<EstudianteAsignaturaOutputDTO>> findByIdEstudiante(@PathVariable String id) throws Exception
+    public ResponseEntity<EstudianteAsignaturaListaOutputDTO> findByIdEstudiante(@PathVariable String id) throws Exception
     {
         return new ResponseEntity<>(estudianteAsignaturaService.findByEstudiante(id), HttpStatus.OK);
     }

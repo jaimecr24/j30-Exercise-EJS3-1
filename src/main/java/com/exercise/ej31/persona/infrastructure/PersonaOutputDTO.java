@@ -1,12 +1,14 @@
 package com.exercise.ej31.persona.infrastructure;
 
 import com.exercise.ej31.persona.domain.Persona;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
-@Data
-public class PersonaOutputDTO {
+@Getter
+@Setter
+public class PersonaOutputDTO extends OutputDTO {
     private String id_persona;
     private String usuario;
     //String password;
@@ -21,6 +23,7 @@ public class PersonaOutputDTO {
     private Date termination_date;
 
     public PersonaOutputDTO(Persona persona){
+        super();
         this.id_persona = persona.getId_persona();
         this.usuario = persona.getUsuario();
         this.name = persona.getName();
