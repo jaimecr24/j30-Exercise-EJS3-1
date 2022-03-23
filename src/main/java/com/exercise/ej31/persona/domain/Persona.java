@@ -65,5 +65,7 @@ public class Persona {
     @OneToOne(mappedBy = "persona", fetch = FetchType.LAZY)
     private Profesor profesor;
 
+    @NotBlank(message = "admin es nulo")
+    private Boolean admin;
 }
 

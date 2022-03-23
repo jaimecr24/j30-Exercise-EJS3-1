@@ -11,7 +11,7 @@ import java.util.Date;
 public class PersonaOutputDTO extends OutputDTO {
     private String id_persona;
     private String usuario;
-    //String password;
+    private String password;
     private String name;
     private String surname;
     private String company_email;
@@ -21,11 +21,13 @@ public class PersonaOutputDTO extends OutputDTO {
     private Date created_date;
     private String imagen_url;
     private Date termination_date;
+    private Boolean admin;
 
     public PersonaOutputDTO(Persona persona){
         super();
         this.id_persona = persona.getId_persona();
         this.usuario = persona.getUsuario();
+        this.password = persona.getPassword();
         this.name = persona.getName();
         this.surname = persona.getSurname();
         this.company_email = persona.getCompany_email();
@@ -35,6 +37,7 @@ public class PersonaOutputDTO extends OutputDTO {
         this.created_date = persona.getCreated_date();
         this.imagen_url = persona.getImagen_url();
         this.termination_date = persona.getTermination_date();
+        this.admin = persona.getAdmin();
     }
 }
 
